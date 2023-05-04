@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
-const SpeakerService = require('./services/service')
+const SpeakerService = require('./services/speaker')
 const FeedbackService = require('./services/feedback')
 const routes = require('./routes')
 
