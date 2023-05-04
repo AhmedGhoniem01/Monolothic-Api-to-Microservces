@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const port = 3000
+const createError = require("http-errors");
 const SpeakerService = require('./services/speaker')
 const FeedbackService = require('./services/feedback')
 const routes = require('./routes')
@@ -12,6 +13,20 @@ const routes = require('./routes')
 //Handle static files if used
 // app.use(express.static(path.join(__dirname, 'static')))
 
+//This is a static global variable that can be used in templates
+// app.locals.name = 'App'
+
+//global req variables [This can specifically can be used if we want to fetch data with each request and that data periodically changes]
+// app.use(async(req, res, next) => {
+//     try{
+//         const speakerNames = await speakerService.getNames();
+//         app.locals.speakerNames = speakerNames;
+//         return next();
+//     }catch(err){
+//         return next(err);
+//     }
+// })
+
 //Handling request body and json data
 app.use(express.urlencoded({extended: true})) 
 app.use(express.json())
@@ -22,6 +37,22 @@ const feedbackService = new FeedbackService('./data/feedback.json')
 
 //Using routes
 app.use('/', routes({speakerService, feedbackService}))
+
+//Error Handlers
+app.use((req, res, next) => {
+    console.log('Access to a file not found!')
+    return next(createError(404, 'File not found'))
+})
+
+// //Capture generated error and show it in error page
+// app.use((err, req, res, next) => {
+//     //Global error message which can be used in error template
+//     app.locals.errMessage = err.message;
+//     //Global error code also can be directly used in error template
+//     app.locals.errStatus = 500 || err.status;
+//     //Inject error page into layout template 
+//     res.status(errStatus).render('layout', {template: 'error'});
+// })
 
 //App listening on port
 app.listen(port, () => {
