@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const createError = require("http-errors");
+const cookieSession = require('cookie-session')
 const SpeakerService = require('./services/speaker')
 const FeedbackService = require('./services/feedback')
 const routes = require('./routes')
@@ -30,6 +31,13 @@ const routes = require('./routes')
 //Handling request body and json data
 app.use(express.urlencoded({extended: true})) 
 app.use(express.json())
+
+app.use(
+    cookieSession({
+        name: 'session',
+        keys: ['FGD456d45fgh', 'GR64dh654h']
+    })
+)
 
 //Creating new services instances to be injected into routes
 const speakerService = new SpeakerService('./Monolothic api/data/speakers.json')
