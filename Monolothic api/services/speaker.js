@@ -11,9 +11,8 @@ class SpeakerService{
 
     async getSpeakers(){
         const data = await readFile(this.dataFile, 'utf-8')
-        if(data)
-            return JSON.parse(data)
-        return []
+        const speakers = JSON.parse(data).speakers
+        return speakers || []
     }
 
     async getNames(){
@@ -27,9 +26,8 @@ class SpeakerService{
 
     async getSpeaker(shortname){
         const data = await this.getSpeakers()
-
-        const speaker = data.find(speaker => {
-            return speaker.shortname = shortname
+        const speaker = data.find((speaker) => {
+            return speaker.shortname == shortname
         })
 
         if(!speaker) return null
@@ -40,7 +38,7 @@ class SpeakerService{
         const data = await this.getSpeakers()
 
         const speaker = data.find(speaker => {
-            return speaker.shortname = shortname
+            return speaker.shortname == shortname
         })
 
         if(!speaker || !speaker.artwork) return null
@@ -54,6 +52,8 @@ class SpeakerService{
                 return {speaker: speaker.shortname, artwork: speaker.artwork}
             }
         })
-        retrun (artworks || null)
+        return (artworks || null)
     }
 }   
+
+module.exports = SpeakerService;

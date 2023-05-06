@@ -32,8 +32,8 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 
 //Creating new services instances to be injected into routes
-const speakerService = new SpeakerService('./data/speakers.json')
-const feedbackService = new FeedbackService('./data/feedback.json')
+const speakerService = new SpeakerService('./Monolothic api/data/speakers.json')
+const feedbackService = new FeedbackService('./Monolothic api/data/feedback.json')
 
 //Using routes
 app.use('/', routes({speakerService, feedbackService}))
