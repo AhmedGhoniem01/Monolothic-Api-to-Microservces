@@ -14,6 +14,12 @@ module.exports = (config) => {
         })
     }
 
+    //Check services expiration with each incoming request
+    service.use((req,res, next) => {
+        serviceRegistery.cleanUp()
+        next()
+    })
+
     service.put('/register/:serviceName/:serviceVersion/:servicePort/', (req, res) => {
         try{
             const {serviceName, serviceVersion, servicePort} = req.params;
@@ -41,8 +47,18 @@ module.exports = (config) => {
         }     
     })
 
-    service.get('/register/:serviceName/:serviceVersion/:servicePort/', (req, res, next) => {
-        return next()
+    service.get('/get/:serviceName/:serviceVersion', (req, res) => {
+        try{
+            const {serviceName, serviceVersion} = req.params;
+            const service = serviceRegistery.getService(serviceName, serviceVersion);
+            if(!service){
+                return res.status(404).json({Message: "Service not found!", Result: service}) 
+            }
+            return res.status(200).json({Message: "Service retrived successfully", Result: service}) 
+        }catch(err){
+            console.log(`Internal server error: ${err.message}`)
+            return res.status(err.status || 500).json({Error: err.message})
+        }  
     })
 
     service.use((error, req, res, next) => {

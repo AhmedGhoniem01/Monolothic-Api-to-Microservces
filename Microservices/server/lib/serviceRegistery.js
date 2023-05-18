@@ -20,20 +20,38 @@ class ServiceRegistery {
                 Version: serviceVersion,
                 IP: serviceIP,
                 Port: servicePort,
-                timestamp: new Date().toLocaleString()
+                timestamp: Math.floor(new Date() / 1000)
             }
             this.services[serviceID] = service
             this.log.debug(`Added new Microservice: ${serviceID}`)
             return serviceID
         }
-        this.services[serviceID].serviceName = serviceName
-        this.services[serviceID].serviceVersion = serviceVersion
-        this.services[serviceID].serviceIP = serviceIP
-        this.services[serviceID].servicePort = servicePort
-        this.services[serviceID].timestamp = new Date().toLocaleString()
+        this.services[serviceID].Name = serviceName
+        this.services[serviceID].Version = serviceVersion
+        this.services[serviceID].IP = serviceIP
+        this.services[serviceID].Port = servicePort
+        this.services[serviceID].timestamp = Math.floor(new Date() / 1000)
         this.log.debug(`Updated Microservice: ${serviceID}`)
 
         return serviceID
+    }
+
+    getService(serviceName, serviceVersion){
+        const serviceList = Object.values(this.services).filter((service) => (service.Name == serviceName) && (parseInt(service.Version)-parseInt(serviceVersion)<1))
+        //Load balance returned services by random 
+        return serviceList[Math.floor(Math.random() * serviceList.length)]
+    }
+
+    cleanUp(){
+        Object.keys(this.services).forEach((serviceID) => {
+            console.log(serviceID)
+            //Must use this date format for addition operation in cleanup
+            const now = Math.floor(new Date() / 1000)
+            if(this.services[serviceID].timestamp + this.timeout < now){
+                delete this.services[serviceID]
+                this.log.debug(`Microservice: ${serviceID} Timed-out`)
+            }
+        })
     }
 
     unRegisterService(serviceName, serviceVersion, serviceIP, servicePort){
