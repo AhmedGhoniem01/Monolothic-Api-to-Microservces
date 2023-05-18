@@ -36,6 +36,18 @@ class ServiceRegistery {
         return serviceID
     }
 
+    unRegisterService(serviceName, serviceVersion, serviceIP, servicePort){
+        const serviceID = `${serviceName}:${serviceVersion}/${serviceIP}/${servicePort}`
+
+        if (!this.services[serviceID]){
+            this.log.debug(`Microservice: ${serviceID} Not found!`)
+            return null
+        }
+        delete this.services[serviceID]
+        this.log.debug(`Deleted Microservice: ${serviceID}`)
+        return serviceID
+    }
+
 }
 
 module.exports = ServiceRegistery

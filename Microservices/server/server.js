@@ -26,11 +26,22 @@ module.exports = (config) => {
         }   
     })
 
-    service.get('register/:serviceName/:serviceVersion/:servicePort/', (req, res, next) => {
-        return next()
+    service.delete('/unregister/:serviceName/:serviceVersion/:servicePort/', (req, res, next) => {
+        try{
+            const {serviceName, serviceVersion, servicePort} = req.params;
+            const serviceIP = req.connection.remoteAddress.includes('::') ? `[${req.connection.remoteAddress}]` : req.connection.remoteAddress;
+            const serviceID = serviceRegistery.unRegisterService(serviceName, serviceVersion, serviceIP, servicePort);
+            if(serviceID){
+                return res.status(200).json({Message: "Deletion successful", Result: serviceID}) 
+            }
+            return res.status(404).json({Message: "Service Not found", Result: serviceID}) 
+        }catch(err){
+            console.log(`Internal server error: ${err.message}`)
+            return res.status(err.status || 500).json({Error: err.message})
+        }     
     })
 
-    service.delete('register/:serviceName/:serviceVersion/:servicePort/', (req, res, next) => {
+    service.get('/register/:serviceName/:serviceVersion/:servicePort/', (req, res, next) => {
         return next()
     })
 
