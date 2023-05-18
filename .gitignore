@@ -1,1 +1,5 @@
 Monolothic api/node_modules
+Monolothic api/.env
+
+Microservices/node_modules
+Microservices/.env
