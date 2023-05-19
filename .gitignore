@@ -1,5 +1,8 @@
 Monolothic api/node_modules
 Monolothic api/.env
 
-Microservices/node_modules
-Microservices/.env
+Microservices/Service Registery/node_modules
+Microservices/Service Registery/.env
+
+Microservices/Speakers Service/node_modules
+Microservices/Speakers Service/.env
