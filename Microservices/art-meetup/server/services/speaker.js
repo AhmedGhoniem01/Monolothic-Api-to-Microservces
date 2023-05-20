@@ -1,5 +1,6 @@
 const util = require('util')
 const fs = require('fs')
+const axios = require('axios')
 
 const readFile = util.promisify(fs.readFile)
 const writeFile = util.promisify(fs.writeFile)
@@ -8,52 +9,52 @@ class SpeakerService{
     constructor({serviceRegistryUrl, serviceVersion}){
         this.serviceRegistryUrl = serviceRegistryUrl
         this.serviceVersion = serviceVersion
+        this.serviceName = 'speakers-service'
     }
 
     async getSpeakers(){
-        const data = await readFile(this.dataFile, 'utf-8')
-        const speakers = JSON.parse(data).speakers
-        return speakers || []
+        const {ip, port} = await this.getService('speakers-service');
+        return this.callService({
+          method: 'get',
+          url: `http://${ip}:${port}/speakers`
+        });
     }
 
     async getNames(){
-        const data = await this.getSpeakers()
-        if(data)
-            return data.map(speaker => {
-                return {name: speaker.name, shortname: speaker.shortName}
-            })
-        return []
+        const {ip, port} = await this.getService('speakers-service');
+        return this.callService({
+          method: 'get',
+          url: `http://${ip}:${port}/speakers/shortnames`
+        });
     }
 
     async getSpeaker(shortname){
-        const data = await this.getSpeakers()
-        const speaker = data.find((speaker) => {
-            return speaker.shortname == shortname
-        })
-
-        if(!speaker) return null
-        return speaker
+        const {ip, port} = await this.getService('speakers-service');
+        return this.callService({
+          method: 'get',
+          url: `http://${ip}:${port}/speakers/:shortname`
+        });
     }
 
     async getSpeakerArtworks(shortname){
-        const data = await this.getSpeakers()
-
-        const speaker = data.find(speaker => {
-            return speaker.shortname == shortname
-        })
-
-        if(!speaker || !speaker.artwork) return null
-        return speaker.artwork
+        const {ip, port} = await this.getService('speakers-service');
+        return this.callService({
+          method: 'get',
+          url: `http://${ip}:${port}/artworks/:shortname`
+        });
     }
 
     async getAllArtworks(){
-        const data = await this.getSpeakers()
-        const artworks = data.map(speaker => {
-            if(speaker.artwork){
-                return {speaker: speaker.shortname, artwork: speaker.artwork}
-            }
-        })
-        return (artworks || null)
+        const {ip, port} = await this.getService('speakers-service');
+        return this.callService({
+          method: 'get',
+          url: `http://${ip}:${port}/artworks`
+        });
+    }
+    
+    async getService(){
+        const res = await axios.get(`${this.serviceRegistryUrl}/get/${this.serviceName}/${this.serviceVersion}`)
+        return res.data
     }
 }   
 

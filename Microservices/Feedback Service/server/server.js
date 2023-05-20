@@ -18,7 +18,7 @@ module.exports = (config) => {
         next()
     })
 
-    service.get('/', async (req, res, next) => {
+    router.get('/feedback', async (req, res, next) => {
         try {
             const feedbacks = await feedbackService.getFeedbacks()
 
@@ -38,7 +38,7 @@ module.exports = (config) => {
         }
     })
 
-    service.post('/', validationArr, async (req, res, next) => {
+    router.post('/feedback', validationArr, async (req, res, next) => {
         try {
             const errors = validationResult(req)
             if (!errors.isEmpty()) {

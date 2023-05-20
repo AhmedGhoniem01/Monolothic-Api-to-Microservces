@@ -59,6 +59,10 @@ app.use((req, res, next) => {
     return next(createError(404, 'File not found'))
 })
 
+app.use((error, req, res, next) => {
+    res.json({Error: error.message})
+})
+
 // //Capture generated error and show it in error page
 // app.use((err, req, res, next) => {
 //     //Global error message which can be used in error template
