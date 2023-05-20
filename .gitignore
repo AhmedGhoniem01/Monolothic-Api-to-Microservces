@@ -6,3 +6,9 @@ Microservices/Service Registery/.env
 
 Microservices/Speakers Service/node_modules
 Microservices/Speakers Service/.env
+
+Microservices/Feedback Service/node_modules
+Microservices/Feedback Service/.env
+
+Microservices/Art-Meetup/node_modules
+Microservices/Art-Meetup/.env

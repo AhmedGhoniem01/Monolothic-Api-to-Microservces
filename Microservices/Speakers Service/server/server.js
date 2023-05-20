@@ -20,9 +20,9 @@ module.exports = (config) => {
         try {
             const speakers = await speakerService.getSpeakers()
             if (speakers) {
-                res.status(200).json(speakers)
+                return res.status(200).json(speakers)
             }
-            res.json({ Info: 'No speakers found!' })
+            return res.json({ Info: 'No speakers found!' })
         } catch (err) {
             console.log(`Error: ${err.message}`)
             return next(err);
@@ -34,9 +34,9 @@ module.exports = (config) => {
         try {
             const speakers = await speakerService.getNames()
             if (speakers) {
-                res.status(200).json(speakers)
+                return res.status(200).json(speakers)
             }
-            res.json({ Info: 'No speakers found!' })
+            return res.json({ Info: 'No speakers found!' })
         } catch (err) {
             console.log(`Error: ${err.message}`)
             return next(err);
@@ -50,9 +50,9 @@ module.exports = (config) => {
             const { shortname } = req.params
             const speaker = await speakerService.getSpeaker(shortname)
             if (speaker) {
-                res.status(200).json(speaker)
+                return res.status(200).json(speaker)
             } else {
-                res.json({ Info: 'Speaker not found!' })
+                return res.json({ Info: 'Speaker not found!' })
             }
         } catch (err) {
             console.log(`Error: ${err.message}`)
@@ -65,9 +65,9 @@ module.exports = (config) => {
         try {
             const artworks = await speakerService.getAllArtworks()
             if (artworks) {
-                res.status(200).json(artworks)
+                return res.status(200).json(artworks)
             }
-            res.json({ Info: 'No artworks found!' })
+            return res.json({ Info: 'No artworks found!' })
         } catch (err) {
             console.log(`Error: ${err.message}`)
             return next(err);
@@ -82,12 +82,12 @@ module.exports = (config) => {
             if (speaker) {
                 const artworks = await speakerService.getSpeakerArtworks(shortname)
                 if (artworks) {
-                    res.status(200).json(artworks)
+                    return res.status(200).json(artworks)
                 } else {
-                    res.status(200).json({ Info: "Speaker doesn't have any artworks" })
+                    return res.status(200).json({ Info: "Speaker doesn't have any artworks" })
                 }
             }
-            res.json({ Info: 'Speaker not found!' })
+            return res.json({ Info: 'Speaker not found!' })
         } catch (err) {
             console.log(`Error: ${err.message}`)
             return next(err);
@@ -96,7 +96,7 @@ module.exports = (config) => {
 
     service.use((error, req, res, next) => {
         log.error(`Error: ${error.message}`)
-        res.status(500 || error.status).json({error: error.message})
+        return res.status(500 || error.status).json({error: error.message})
     })
     
     return service;
