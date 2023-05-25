@@ -1,14 +1,25 @@
 const express = require('express')
 const service = express()
 
-const {validationArr} = require('./lib/validator')
-const {validationResult} = require('express-validator')
+const { validationArr } = require('./lib/validator')
+const { validationResult } = require('express-validator')
+const cookieSession = require('cookie-session')
 
 const FeedbackService = require('./lib/feedback')
 
 module.exports = (config) => {
     const log = config.log()
     const feedbackService = new FeedbackService(config.data.feedbacks)
+
+    service.use(express.urlencoded({ extended: true }))
+    service.use(express.json())
+
+    service.use(
+        cookieSession({
+            name: 'session',
+            keys: ['FGD456d45fgh', 'GR64dh654h']
+        })
+    )
 
     //Print incoming request in dev mode
     service.use((req, res, next) => {
@@ -18,7 +29,7 @@ module.exports = (config) => {
         next()
     })
 
-    router.get('/feedback', async (req, res, next) => {
+    service.get('/feedback', async (req, res, next) => {
         try {
             const feedbacks = await feedbackService.getFeedbacks()
 
@@ -38,14 +49,14 @@ module.exports = (config) => {
         }
     })
 
-    router.post('/feedback', validationArr, async (req, res, next) => {
+    service.post('/feedback', validationArr, async (req, res, next) => {
         try {
             const errors = validationResult(req)
             if (!errors.isEmpty()) {
                 req.session.feedback = {
                     errors: errors.array()
                 }
-                res.redirect('/feedback')
+                return res.redirect('/feedback') //Required return
             }
 
             const { name, email, title, message } = req.body
@@ -53,8 +64,7 @@ module.exports = (config) => {
             req.session.feedback = {
                 message: 'Added Feedback Successfully'
             }
-
-            res.status(200).redirect('/feedback')
+            return res.status(200).redirect('/feedback')
         } catch (err) {
             console.log(`Failed to create new feedback\nError: ${err.message}`)
             return next(err)

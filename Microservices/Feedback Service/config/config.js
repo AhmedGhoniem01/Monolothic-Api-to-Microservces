@@ -1,4 +1,4 @@
-const {name, version} = require('../Speakers Service/package.json')
+const {name, version} = require('../package.json')
 const bunyan = require('bunyan')
 const path = require('path')
 
@@ -10,7 +10,7 @@ module.exports = {
         version,
         serviceTimeout: 30,
         data: {
-            feedback: path.join(__dirname, '../data/feedback.json')
+            feedbacks: path.join(__dirname, '../data/feedback.json')
         },
         log : () => logger(name, version, "debug")
     },
@@ -19,7 +19,7 @@ module.exports = {
         version: version,
         serviceTimeout: 30,
         data: {
-            feedback: path.join(__dirname, '../data/feedback.json')
+            feedbacks: path.join(__dirname, '../data/feedback.json')
         },
         log : () => logger(name, version, "fatal")
     },
@@ -28,7 +28,7 @@ module.exports = {
         version: version,
         serviceTimeout: 100,
         data: {
-            feedback: path.join(__dirname, '../data/feedback.json')
+            feedbacks: path.join(__dirname, '../data/feedback.json')
         },
         log : () => logger(name, version, "info")
     }
